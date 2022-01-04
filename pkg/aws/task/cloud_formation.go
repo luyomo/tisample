@@ -33,7 +33,7 @@ type CreateCloudFormation struct {
 
 // Execute implements the Task interface
 func (c *CreateCloudFormation) Execute(ctx context.Context) error {
-	stackName := ctx.Value("stackName").(string)
+	stackName := ctx.Value("clusterName").(string)
 	var content []byte
 	if c.awsCloudFormationConfigs.TemplateBodyFilePath != "" {
 		content, _ = ioutil.ReadFile(c.awsCloudFormationConfigs.TemplateBodyFilePath)
@@ -82,7 +82,7 @@ type DestroyCloudFormation struct {
 
 // Execute implements the Task interface
 func (c *DestroyCloudFormation) Execute(ctx context.Context) error {
-	stackName := ctx.Value("StackName").(string)
+	stackName := ctx.Value("clusterName").(string)
 	sess := session.Must(session.NewSession(
 		&aws.Config{
 			Region:     aws.String(c.clusterInfo.region),
