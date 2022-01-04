@@ -497,6 +497,16 @@ func (b *Builder) CreateVpc(pexecutor *ctxt.Executor, subClusterType string, clu
 	return b
 }
 
+func (b *Builder) CreateCloudFormation(pexecutor *ctxt.Executor,awsCloudFormationConfigs *spec.AwsCloudFormationConfigs, cloudFormationType string, clusterInfo *ClusterInfo) *Builder {
+	b.tasks = append(b.tasks, &CreateCloudFormation{
+		pexecutor: pexecutor,
+		awsCloudFormationConfigs: awsCloudFormationConfigs,
+		cloudFormationType:       cloudFormationType,
+		clusterInfo:              clusterInfo,
+	})
+	return b
+}
+
 func (b *Builder) CreateNetwork(pexecutor *ctxt.Executor, subClusterType string, isPrivate bool, clusterInfo *ClusterInfo) *Builder {
 	b.tasks = append(b.tasks, &CreateNetwork{
 		pexecutor:      pexecutor,
@@ -902,6 +912,13 @@ func (b *Builder) DestroyTransitGatewayVpcAttachment(pexecutor *ctxt.Executor) *
 func (b *Builder) DestroyTransitGateway(pexecutor *ctxt.Executor) *Builder {
 	b.tasks = append(b.tasks, &DestroyTransitGateway{
 		pexecutor: pexecutor,
+	})
+	return b
+}
+
+func (b *Builder) DestroyCloudFormation(pexecutor *ctxt.Executor) *Builder {
+	b.tasks = append(b.tasks, &DestroyCloudFormation{
+		pexecutor:   pexecutor,
 	})
 	return b
 }

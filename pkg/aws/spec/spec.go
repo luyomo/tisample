@@ -174,6 +174,13 @@ type (
 		InstanceType string `yaml:"instance_type"`
 	}
 
+	AwsCloudFormationConfigs struct {
+		Parameters map[string]string `yaml:"parameters"`
+		//StackName string `yaml:"stack_name"`
+		TemplateBodyFilePath string `yaml:"template_body_file_path"`
+		TemplateURL string `yaml:"template_url"`
+	}
+
 	// Specification represents the specification of topology.yaml
 	Specification struct {
 		GlobalOptions    GlobalOptions        `yaml:"global,omitempty" validate:"global:editable"`
@@ -184,6 +191,7 @@ type (
 		AwsAuroraConfigs AwsAuroraConfigs     `yaml:"aurora,omitempty"`
 		AwsMSConfigs     AwsMSConfigs         `yaml:"sqlserver,omitempty"`
 		AwsDMSConfigs    AwsDMSConfigs        `yaml:"dms,omitempty"`
+		AwsCloudFormationConfigs AwsCloudFormationConfigs `yaml:"aws_cloud_formation_configs"`
 		TiDBServers      []*TiDBSpec          `yaml:"tidb_servers"`
 		TiKVServers      []*TiKVSpec          `yaml:"tikv_servers"`
 		TiFlashServers   []*TiFlashSpec       `yaml:"tiflash_servers"`
