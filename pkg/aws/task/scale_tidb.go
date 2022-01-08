@@ -91,7 +91,7 @@ func (c *ScaleTiDB) Execute(ctx context.Context) error {
 			for _, tag := range instance.Tags {
 				if tag["Key"] == "Component" && tag["Value"] == "pd" {
 					if !pdMap[instance.PrivateIpAddress] {
-						tplData.PD = append(tplData.PD, instance.PrivateIpAddress)
+						tplData.PD = append(tplData.PD, instance)
 					} else {
 						if activeNodesMap["pd"] == nil {
 							activeNodesMap["pd"] = make(map[string][][]string)
@@ -103,7 +103,7 @@ func (c *ScaleTiDB) Execute(ctx context.Context) error {
 				}
 				if tag["Key"] == "Component" && tag["Value"] == "tidb" {
 					if !tidbMap[instance.PrivateIpAddress] {
-						tplData.TiDB = append(tplData.TiDB, instance.PrivateIpAddress)
+						tplData.TiDB = append(tplData.TiDB, instance)
 					} else {
 						if activeNodesMap["tidb"] == nil {
 							activeNodesMap["tidb"] = make(map[string][][]string)
@@ -114,7 +114,7 @@ func (c *ScaleTiDB) Execute(ctx context.Context) error {
 				}
 				if tag["Key"] == "Component" && tag["Value"] == "tikv" {
 					if !tikvMap[instance.PrivateIpAddress] {
-						tplData.TiKV = append(tplData.TiKV, instance.PrivateIpAddress)
+						tplData.TiKV = append(tplData.TiKV, instance)
 					} else {
 						if activeNodesMap["tikv"] == nil {
 							activeNodesMap["tikv"] = make(map[string][][]string)
@@ -125,7 +125,7 @@ func (c *ScaleTiDB) Execute(ctx context.Context) error {
 				}
 				if tag["Key"] == "Component" && tag["Value"] == "ticdc" {
 					if !ticdcMap[instance.PrivateIpAddress] {
-						tplData.TiCDC = append(tplData.TiCDC, instance.PrivateIpAddress)
+						tplData.TiCDC = append(tplData.TiCDC, instance)
 					} else {
 						if activeNodesMap["ticdc"] == nil {
 							activeNodesMap["ticdc"] = make(map[string][][]string)
@@ -136,7 +136,7 @@ func (c *ScaleTiDB) Execute(ctx context.Context) error {
 				}
 				if tag["Key"] == "Component" && tag["Value"] == "dm" {
 					if !dmMap[instance.PrivateIpAddress] {
-						tplData.DM = append(tplData.DM, instance.PrivateIpAddress)
+						tplData.DM = append(tplData.DM, instance)
 					} else {
 						if activeNodesMap["dm"] == nil {
 							activeNodesMap["dm"] = make(map[string][][]string)
@@ -215,33 +215,37 @@ func (c *ScaleTiDB) Execute(ctx context.Context) error {
 	buffer.WriteString("---\n")
 	if len(tplData.PD) > 0 {
 		buffer.WriteString("pd_servers:\n")
-		for _, ip := range tplData.PD {
+		for _, instance := range tplData.PD {
 			buffer.WriteString("  - host: ")
-			buffer.WriteString(ip)
+			buffer.WriteString(instance.PrivateIpAddress)
 			buffer.WriteString("\n")
 		}
 	}
 	if len(tplData.TiDB) > 0 {
 		buffer.WriteString("tidb_servers:\n")
-		for _, ip := range tplData.TiDB {
+		for _, instance := range tplData.TiDB {
 			buffer.WriteString("  - host: ")
-			buffer.WriteString(ip)
+			buffer.WriteString(instance.PrivateIpAddress)
+			buffer.WriteString("    config: \n")
+			buffer.WriteString("      server.labels: \n")
+			buffer.WriteString("          az: ")
+			buffer.WriteString(instance.Placement.AvailabilityZone)
 			buffer.WriteString("\n")
 		}
 	}
 	if len(tplData.TiKV) > 0 {
 		buffer.WriteString("tikv_servers:\n")
-		for _, ip := range tplData.TiKV {
+		for _, instance := range tplData.TiKV {
 			buffer.WriteString("  - host: ")
-			buffer.WriteString(ip)
+			buffer.WriteString(instance.PrivateIpAddress)
 			buffer.WriteString("\n")
 		}
 	}
 	if len(tplData.TiCDC) > 0 {
 		buffer.WriteString("cdc_servers:\n")
-		for _, ip := range tplData.TiCDC {
+		for _, instance := range tplData.TiCDC {
 			buffer.WriteString("  - host: ")
-			buffer.WriteString(ip)
+			buffer.WriteString(instance.PrivateIpAddress)
 			buffer.WriteString("\n")
 		}
 	}

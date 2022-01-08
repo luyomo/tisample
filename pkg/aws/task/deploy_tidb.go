@@ -36,16 +36,24 @@ type DeployTiDB struct {
 }
 
 type TplTiupData struct {
-	PD      []string
-	TiDB    []string
-	TiKV    []string
-	TiCDC   []string
-	DM      []string
-	Monitor []string
+	PD      []EC2
+	TiDB    []EC2
+	TiKV    []EC2
+	TiCDC   []EC2
+	DM      []EC2
+	Monitor []EC2
 }
 
 func (t TplTiupData) String() string {
-	return fmt.Sprintf("PD: %s  |  TiDB: %s  |  TiKV: %s  |  TiCDC: %s  |  DM: %s  |  Monitor:%s", strings.Join(t.PD, ","), strings.Join(t.TiDB, ","), strings.Join(t.TiKV, ","), strings.Join(t.TiCDC, ","), strings.Join(t.DM, ","), strings.Join(t.Monitor, ","))
+	return fmt.Sprintf("PD: %s  |  TiDB: %s  |  TiKV: %s  |  TiCDC: %s  |  DM: %s  |  Monitor:%s", strings.Join(getIps(t.PD), ","), strings.Join(getIps(t.TiDB), ","), strings.Join(getIps(t.TiKV), ","), strings.Join(getIps(t.TiCDC), ","), strings.Join(getIps(t.DM), ","), strings.Join(getIps(t.Monitor), ","))
+}
+
+func getIps(ec2s []EC2) []string {
+	var ips []string
+	for _, m := range ec2s {
+		ips = append(ips, m.PrivateIpAddress)
+	}
+	return ips
 }
 
 // Execute implements the Task interface
@@ -78,27 +86,27 @@ func (c *DeployTiDB) Execute(ctx context.Context) error {
 		for _, instance := range reservation.Instances {
 			for _, tag := range instance.Tags {
 				if tag["Key"] == "Component" && tag["Value"] == "pd" {
-					tplData.PD = append(tplData.PD, instance.PrivateIpAddress)
+					tplData.PD = append(tplData.PD, instance)
 
 				}
 				if tag["Key"] == "Component" && tag["Value"] == "tidb" {
-					tplData.TiDB = append(tplData.TiDB, instance.PrivateIpAddress)
+					tplData.TiDB = append(tplData.TiDB, instance)
 
 				}
 				if tag["Key"] == "Component" && tag["Value"] == "tikv" {
-					tplData.TiKV = append(tplData.TiKV, instance.PrivateIpAddress)
+					tplData.TiKV = append(tplData.TiKV, instance)
 
 				}
 				if tag["Key"] == "Component" && tag["Value"] == "ticdc" {
-					tplData.TiCDC = append(tplData.TiCDC, instance.PrivateIpAddress)
+					tplData.TiCDC = append(tplData.TiCDC, instance)
 
 				}
 				if tag["Key"] == "Component" && tag["Value"] == "dm" {
-					tplData.DM = append(tplData.DM, instance.PrivateIpAddress)
+					tplData.DM = append(tplData.DM, instance)
 
 				}
 				if tag["Key"] == "Component" && tag["Value"] == "workstation" {
-					tplData.Monitor = append(tplData.Monitor, instance.PrivateIpAddress)
+					tplData.Monitor = append(tplData.Monitor, instance)
 
 				}
 			}

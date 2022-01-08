@@ -19,7 +19,7 @@ server_configs:
 
 master_servers:
    {{- range .DM }}
-  - host: {{. }}
+  - host: {{.PrivateIpAddress }}
     name: master1
     ssh_port: 22
     port: 8261
@@ -29,7 +29,7 @@ master_servers:
 
 worker_servers:
    {{- range .DM }}
-  - host: {{. }}
+  - host: {{.PrivateIpAddress }}
     ssh_port: 22
     port: 8262
     config:
@@ -38,17 +38,17 @@ worker_servers:
 
 monitoring_servers:
    {{- range .Monitor }}
-  - host: {{. }}
+  - host: {{.PrivateIpAddress }}
     port: 19090
    {{- end }}
 grafana_servers:
    {{- range .Monitor }}
-  - host: {{. }}
+  - host: {{.PrivateIpAddress }}
     port: 13000
    {{- end }}
 alertmanager_servers:
    {{- range .Monitor }}
-  - host: {{. }}
+  - host: {{.PrivateIpAddress }}
     web_port: 19093
     cluster_port: 19094
    {{- end }}

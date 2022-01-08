@@ -17,9 +17,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/luyomo/tisample/pkg/ctxt"
 	//"github.com/luyomo/tisample/pkg/executor"
 	"strings"
+
+	"github.com/luyomo/tisample/pkg/ctxt"
+
 	//	"strings"
 	"go.uber.org/zap"
 )
@@ -36,11 +38,19 @@ type EC2 struct {
 	VpcId            string              `json:"VpcId"`
 	InstanceType     string              `json:"InstanceType"`
 	ImageId          string              `json:"ImageId"`
+	Placement        Placement           `json:"Placement"`
 	PrivateIpAddress string              `json:"PrivateIpAddress"`
 	PrivateDnsName   string              `json:"PrivateDnsName"`
 	PublicIpAddress  string              `json:"PublicIpAddress"`
 	Tags             []map[string]string `json:"Tags"`
 }
+
+type Placement struct {
+	AvailabilityZone string `json:"AvailabilityZone"`
+	GroupName        string `json:"GroupName"`
+	Tenancy          string `json:"Tenancy"`
+}
+
 type NewEC2 struct {
 	Instances EC2 `json:"Instances"`
 }
